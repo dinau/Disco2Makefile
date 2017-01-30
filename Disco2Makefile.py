@@ -42,7 +42,7 @@ mcu_regex_to_cflags_dict = {
     'STM32(F|L)2': '-mthumb -mcpu=cortex-m3',
     'STM32(F|L)3': '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard',
     'STM32(F|L)4': '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard',
-    'STM32(F|L)7': '-mthumb -mcpu=cortex-m7 -mfpu=fpv4-sp-d16 -mfloat-abi=hard',
+    'STM32(F|L)7': '-mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard',
 }
 
 def main():
@@ -53,7 +53,7 @@ def main():
         sys.stderr.write("Initially written by Baoshi <mail\x40ba0sh1.com> on 2015-02-22\n")
         sys.stderr.write("Modified by Nick on 2017-01-13\n")
         sys.stderr.write("\nUsage:\n")
-        sys.stderr.write("  CubeMX2Makefile.py <SW4STM32 project folder>\n")
+        sys.stderr.write("  Disco2Makefile.py <SW4STM32 project folder>\n")
         sys.exit(C2M_ERR_INVALID_COMMANDLINE)
 
     # Load template files
