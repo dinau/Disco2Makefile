@@ -27,7 +27,7 @@ def replace_path(text):
         "PARENT-5-PROJECT_LOC" : "../../../../..",
         "PARENT-6-PROJECT_LOC" : "../../../../../..",
         "PARENT-7-PROJECT_LOC" : "../../../../../../.."
-    } 
+    }
     # Create a regular expression  from the dictionary keys
     regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
     # For each match, look-up corresponding value in dictionary
@@ -46,7 +46,7 @@ mcu_regex_to_cflags_dict = {
 }
 
 def main():
-    
+
     if len(sys.argv) != 2:
         sys.stderr.write("\nSTM32CubeMX project to Makefile V1.9\n")
         sys.stderr.write("-==================================-\n")
@@ -105,10 +105,10 @@ def main():
     try:
         tree = xml.etree.ElementTree.parse(ac6_project_path)
         root = tree.getroot()
-        print "lklklkl"
+        #print "lklklkl"
     except Exception, e:
         sys.stderr.write("Unable to parse SW4STM32 .project file: {}. Error: {}\n".format(ac6_project_path, str(e)))
-        print "lklklkl"
+        #print "lklklkl"
         sys.exit(C2M_ERR_PROJECT_FILE)
     nodes = root.findall('linkedResources/link[type=\'1\']/location')
     if len(nodes) == 0:
@@ -118,7 +118,7 @@ def main():
         sources.append(replace_path(node.text))
     sources=list(set(sources))
     sources.sort()
-    print sources
+    #print sources
     c_sources = 'C_SOURCES ='
     asm_sources = 'ASM_SOURCES ='
     for source in sources:
@@ -175,8 +175,8 @@ def main():
                             if path_tok == relpath_split[0]:
                                 s['inc_subst'] += path_tok
                             else:
-                                s['inc_subst'] += '/' + path_tok         
-    """                
+                                s['inc_subst'] += '/' + path_tok
+    """
     # .cproject file
     try:
         tree = xml.etree.ElementTree.parse(ac6_cproject_path)
@@ -263,7 +263,7 @@ def main():
         sys.exit(C2M_ERR_IO)
 
     sys.stdout.write("Makefile created: {}\n".format(makefile_path))
-    
+
     sys.exit(C2M_ERR_SUCCESS)
 
 
