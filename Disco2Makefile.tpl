@@ -22,7 +22,7 @@ OPENOCD_TARGET    ?= target/stm32f7x.cfg
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -O0
+OPT = -Os
 
 #######################################
 # pathes
@@ -33,7 +33,7 @@ BUILD_DIR = build
 ######################################
 # source
 ######################################
-$C_SOURCES  
+$C_SOURCES
 $ASM_SOURCES
 
 #######################################
@@ -42,11 +42,12 @@ $ASM_SOURCES
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-gcc -x assembler-with-cpp
 CP = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
 AR = arm-none-eabi-ar
 SZ = arm-none-eabi-size
 HEX = $$(CP) -O ihex
 BIN = $$(CP) -O binary -S
- 
+
 #######################################
 # CFLAGS
 #######################################
@@ -88,24 +89,26 @@ vpath %.c $$(sort $$(dir $$(C_SOURCES)))
 OBJECTS += $$(addprefix $$(BUILD_DIR)/,$$(notdir $$(ASM_SOURCES:.s=.o)))
 vpath %.s $$(sort $$(dir $$(ASM_SOURCES)))
 
-$$(BUILD_DIR)/%.o: %.c Makefile | $$(BUILD_DIR) 
-	$$(CC) -c $$(CFLAGS) -Wa,-a,-ad,-alms=$$(BUILD_DIR)/$$(notdir $$(<:.c=.lst)) $$< -o $$@
+$$(BUILD_DIR)/%.o: %.c Makefile | $$(BUILD_DIR)
+	$$(CC) -c $$(CFLAGS) $$< -o $$@
 
 $$(BUILD_DIR)/%.o: %.s Makefile | $$(BUILD_DIR)
 	$$(AS) -c $$(CFLAGS) $$< -o $$@
 
 $$(BUILD_DIR)/$$(TARGET).elf: $$(OBJECTS) Makefile
 	$$(CC) $$(OBJECTS) $$(LDFLAGS) -o $$@
+	@$$(OD) -hSC $$@ >       $$(@:.elf=.lst)
+	@$$(OD) -hdC $$@ >       $$(@:.elf=.lst2)
 	$$(SZ) $$@
 
 $$(BUILD_DIR)/%.hex: $$(BUILD_DIR)/%.elf | $$(BUILD_DIR)
 	$$(HEX) $$< $$@
-	
+
 $$(BUILD_DIR)/%.bin: $$(BUILD_DIR)/%.elf | $$(BUILD_DIR)
-	$$(BIN) $$< $$@	
-	
+	$$(BIN) $$< $$@
+
 $$(BUILD_DIR):
-	mkdir -p $$@		
+	mkdir -p $$@
 
 #######################################
 # Flash the stm.
@@ -133,7 +136,7 @@ erase:
 #######################################
 clean:
 	-rm -fR .dep $$(BUILD_DIR)
-  
+
 #######################################
 # dependencies
 #######################################
